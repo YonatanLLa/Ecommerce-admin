@@ -40,7 +40,20 @@ export async function updateUser({
         if (path === '/profile/edit') {
             revalidatePath(path)
         }
-    } catch (error) {
+    } catch (error: any) {
         throw new Error(`Fail to created/update user: ${error}`)
     }
+}
+
+export async function fetchUser(userId: string) {
+
+    try {
+        connectToDB()
+
+        return await User.findOne({id: userId})
+        
+    } catch (error: any) {
+        throw new Error(`Faild to fectch user: ${error.message}`)
+    }
+    
 }
