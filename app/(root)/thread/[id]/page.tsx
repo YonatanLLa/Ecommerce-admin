@@ -6,15 +6,15 @@ import { redirect } from "next/navigation";
 import Comment from "@/components/forms/Comment";
 
 const Page = async ({ params }: { params: { id: string } }) => {
-    if (!params.id)  return null
-    const user = await currentUser();
-    if(!user) return null
+  if (!params.id) return null;
+  const user = await currentUser();
+  if (!user) return null;
 
-    const userInfo = await fetchUser(user.id)
+  const userInfo = await fetchUser(user.id);
 
-    if(!userInfo?.onboarded) redirect('/onboarding')
+  if (!userInfo?.onboarded) redirect("/onboarding");
 
-    const thread = await fetchThreadById(params.id)
+  const thread = await fetchThreadById(params.id);
 
   return (
     <section className="relative">
@@ -36,8 +36,23 @@ const Page = async ({ params }: { params: { id: string } }) => {
           threadId={thread.id}
           currentuserImg={user.imageUrl}
           currentUserId={JSON.stringify(userInfo._id)}
-
+        />
+      </div>
+      <div className="mt-10">
+        {thread.children.map((childItem: any) => (
+          <ThreadCard
+            key={childItem._id}
+            id={childItem._id}
+            currentUserId={user?.id || ""}
+            parentId={childItem.parentId}
+            content={childItem.text}
+            author={childItem.author}
+            community={childItem.community}
+            createdAt={childItem.createdAt}
+            comments={childItem.children}
+            isComment
           />
+        ))}
       </div>
     </section>
   );
