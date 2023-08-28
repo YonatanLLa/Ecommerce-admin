@@ -4,7 +4,7 @@ import { currentUser } from "@clerk/nextjs";
 
 export default async function Home() {
   const result = await fetchPosts();
-  const user = await currentUser()
+  const user = await currentUser();
 
   console.log(result);
 
@@ -12,12 +12,12 @@ export default async function Home() {
     <>
       <h1 className="head-text text-left text-white">Home</h1>
       <div className="mt-9 flex flex-col gap-10">
-         {
-          result.posts.length === 0 ? (
-            <p className='no-result'>No treads found</p>
-          ): (
-            result.posts.map((post)=>(
-              <ThreadCard 
+        {result.posts.length === 0 ? (
+          <p className="no-result">No treads found</p>
+        ) : (
+          <>
+            {result.posts.map((post) => (
+              <ThreadCard
                 key={post._id}
                 id={post._id}
                 currentUserId={user?.id || ""}
@@ -28,9 +28,9 @@ export default async function Home() {
                 createdAt={post.createdAt}
                 comments={post.children}
               />
-            ))
-          )
-         }
+            ))}
+          </>
+        )}
       </div>
     </>
   );
