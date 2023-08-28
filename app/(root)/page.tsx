@@ -11,10 +11,10 @@ export default async function Home() {
   return (
     <>
       <h1 className="head-text text-left text-white">Home</h1>
-      <section className="mt-9 flex flex-col gap-10">
+      <div className="mt-9 flex flex-col gap-10">
          {
           result.posts.length === 0 ? (
-            <p>No treads found</p>
+            <p className='no-result'>No treads found</p>
           ): (
             result.posts.map((post)=>(
               <ThreadCard 
@@ -31,7 +31,7 @@ export default async function Home() {
             ))
           )
          }
-      </section>
+      </div>
     </>
   );
 }
