@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import User from "../models/user.model";
 import { connectToDB } from "../mongoose";
-import path from "path";
 import { FilterQuery, SortOrder, model } from "mongoose";
 import Thread from "../models/thread.model";
 
@@ -130,18 +129,28 @@ export async function fetchUsers({
   }
 }
 export async function getActivity(userId: string) {
-    try {
-      connectToDB()
+  try {
+    connectToDB();
 
-      // find all thread created by the user
+    // find all thread created by the user
 
-      const userThreads = await Thread.find({author: userId})
+    const userThreads = await Thread.find({ author: userId });
 
-      const childThreadIds = userThreads.reduce((acc, userThread) => {
-        return acc.concat(userThread.children)
-      })
-    } catch (error: any) {
-      throw new Error(`faild to fetch activity: ${error.message}`);
-      
-    }
+    const childThreadIds = userThreads.reduce((acc, userThread) => {
+      return acc.concat(userThread.children);
+    }, []);
+
+    const replies = await Thread.find({
+      _id: { $in: childThreadIds },
+      author: { $ne: userId },
+    }).populate({
+      path: "author",
+      model: User,
+      select: "name image _id",
+    });
+
+    return replies
+  } catch (error: any) {
+    throw new Error(`faild to fetch activity: ${error.message}`);
+  }
 }
